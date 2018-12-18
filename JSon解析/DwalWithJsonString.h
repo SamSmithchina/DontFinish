@@ -42,15 +42,14 @@ strTransferredJsonString -- 解析后的字符串
 */
 int TranferredJsonString(const string& strSourceJsonString, string &strTransferredJsonString);
 
-
 /*
 将处理好的json 串输出到执行文件同目录下的"MyJsonAnalyse.txt"
 输入 ;
-		strTransferredJsonString 转换好的json 串；
+const std::string& strResFileNmae -- 转换结果待写入的文件
+strTransferredJsonString 转换好的json 串；
 输出：
-		0  -- 写入文件成功
-		-1 --  写入失败
+0  -- 写入文件成功
+-1 --  写入失败
 */
-int WriteBackToTXT(const string&strTransferredJsonString);
-
+int WriteBackToTXT(const std::string& strResFileNmae, const string&strTransferredJsonString);
 #endif

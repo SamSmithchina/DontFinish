@@ -93,7 +93,7 @@ std::string valueToString( double value )
        continue;
      case '.':
        // Truncate zeroes to save bytes in output, but keep one.
-       *(last_nonzero+2) = '/0';
+       *(last_nonzero+2) = '\0';
        return buffer;
      default:
        return buffer;
@@ -111,45 +111,45 @@ std::string valueToString( bool value )
 std::string valueToQuotedString( const char *value )
 {
    // Not sure how to handle unicode...
-   if (strpbrk(value, "/"///b/f/n/r/t") == NULL && !containsControlCharacter( value ))
-      return std::string("/"") + value + "/"";
+   if (strpbrk(value, "\"\\\b\f\n\r\t") == NULL && !containsControlCharacter( value ))
+      return std::string("\"") + value + "\"";
    // We have to walk value and escape any special characters.
    // Appending to std::string is not efficient, but this should be rare.
    // (Note: forward slashes are *not* rare, but I am not escaping them.)
    unsigned maxsize = strlen(value)*2 + 3; // allescaped+quotes+NULL
    std::string result;
    result.reserve(maxsize); // to avoid lots of mallocs
-   result += "/"";
+   result += "\"";
    for (const char* c=value; *c != 0; ++c)
    {
       switch(*c)
       {
-         case '/"':
-            result += "///"";
+         case '\"':
+            result += "\\\"";
             break;
-         case '//':
-            result += "////";
+         case '\\':
+            result += "\\\\";
             break;
-         case '/b':
-            result += "//b";
+         case '\b':
+            result += "\\b";
             break;
-         case '/f':
-            result += "//f";
+         case '\f':
+            result += "\\f";
             break;
-         case '/n':
-            result += "//n";
+         case '\n':
+            result += "\\n";
             break;
-         case '/r':
-            result += "//r";
+         case '\r':
+            result += "\\r";
             break;
-         case '/t':
-            result += "//t";
+         case '\t':
+            result += "\\t";
             break;
          //case '/':
-            // Even though // is considered a legal escape in JSON, a bare
+            // Even though \/ is considered a legal escape in JSON, a bare
             // slash is also legal, so I see no reason to escape it.
             // (I hope I am not misunderstanding something.
-            // blep notes: actually escaping // may be useful in javascript to avoid </ 
+            // blep notes: actually escaping \/ may be useful in javascript to avoid </ 
             // sequence.
             // Should add a flag to allow this compatibility mode and prevent this 
             // sequence from occurring.
@@ -157,7 +157,7 @@ std::string valueToQuotedString( const char *value )
             if ( isControlCharacter( *c ) )
             {
                std::ostringstream oss;
-               oss << "//u" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << static_cast<int>(*c);
+               oss << "\\u" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << static_cast<int>(*c);
                result += oss.str();
             }
             else
@@ -167,7 +167,7 @@ std::string valueToQuotedString( const char *value )
             break;
       }
    }
-   result += "/"";
+   result += "\"";
    return result;
 }
 
@@ -199,7 +199,7 @@ FastWriter::write( const Value &root )
 {
    document_ = "";
    writeValue( root );
-   document_ += "/n";
+   document_ += "\n";
    return document_;
 }
 
@@ -282,7 +282,7 @@ StyledWriter::write( const Value &root )
    writeCommentBeforeValue( root );
    writeValue( root );
    writeCommentAfterValueOnSameLine( root );
-   document_ += "/n";
+   document_ += "\n";
    return document_;
 }
 
@@ -450,8 +450,8 @@ StyledWriter::writeIndent()
       char last = document_[document_.length()-1];
       if ( last == ' ' )     // already indented
          return;
-      if ( last != '/n' )    // Comments may add new-line
-         document_ += '/n';
+      if ( last != '\n' )    // Comments may add new-line
+         document_ += '\n';
    }
    document_ += indentString_;
 }
@@ -486,7 +486,7 @@ StyledWriter::writeCommentBeforeValue( const Value &root )
    if ( !root.hasComment( commentBefore ) )
       return;
    document_ += normalizeEOL( root.getComment( commentBefore ) );
-   document_ += "/n";
+   document_ += "\n";
 }
 
 
@@ -498,9 +498,9 @@ StyledWriter::writeCommentAfterValueOnSameLine( const Value &root )
 
    if ( root.hasComment( commentAfter ) )
    {
-      document_ += "/n";
+      document_ += "\n";
       document_ += normalizeEOL( root.getComment( commentAfter ) );
-      document_ += "/n";
+      document_ += "\n";
    }
 }
 
@@ -525,11 +525,11 @@ StyledWriter::normalizeEOL( const std::string &text )
    while ( current != end )
    {
       char c = *current++;
-      if ( c == '/r' ) // mac or dos EOL
+      if ( c == '\r' ) // mac or dos EOL
       {
-         if ( *current == '/n' ) // convert dos EOL
+         if ( *current == '\n' ) // convert dos EOL
             ++current;
-         normalized += '/n';
+         normalized += '\n';
       }
       else // handle unix EOL & other char
          normalized += c;
@@ -558,7 +558,7 @@ StyledStreamWriter::write( std::ostream &out, const Value &root )
    writeCommentBeforeValue( root );
    writeValue( root );
    writeCommentAfterValueOnSameLine( root );
-   *document_ << "/n";
+   *document_ << "\n";
    document_ = NULL; // Forget the stream, for safety.
 }
 
@@ -729,11 +729,11 @@ StyledStreamWriter::writeIndent()
       char last = document_[document_.length()-1];
       if ( last == ' ' )     // already indented
          return;
-      if ( last != '/n' )    // Comments may add new-line
-         *document_ << '/n';
+      if ( last != '\n' )    // Comments may add new-line
+         *document_ << '\n';
    }
   */
-   *document_ << '/n' << indentString_;
+   *document_ << '\n' << indentString_;
 }
 
 
@@ -766,7 +766,7 @@ StyledStreamWriter::writeCommentBeforeValue( const Value &root )
    if ( !root.hasComment( commentBefore ) )
       return;
    *document_ << normalizeEOL( root.getComment( commentBefore ) );
-   *document_ << "/n";
+   *document_ << "\n";
 }
 
 
@@ -778,9 +778,9 @@ StyledStreamWriter::writeCommentAfterValueOnSameLine( const Value &root )
 
    if ( root.hasComment( commentAfter ) )
    {
-      *document_ << "/n";
+      *document_ << "\n";
       *document_ << normalizeEOL( root.getComment( commentAfter ) );
-      *document_ << "/n";
+      *document_ << "\n";
    }
 }
 
@@ -805,11 +805,11 @@ StyledStreamWriter::normalizeEOL( const std::string &text )
    while ( current != end )
    {
       char c = *current++;
-      if ( c == '/r' ) // mac or dos EOL
+      if ( c == '\r' ) // mac or dos EOL
       {
-         if ( *current == '/n' ) // convert dos EOL
+         if ( *current == '\n' ) // convert dos EOL
             ++current;
-         normalized += '/n';
+         normalized += '\n';
       }
       else // handle unix EOL & other char
          normalized += c;

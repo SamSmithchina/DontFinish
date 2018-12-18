@@ -18,14 +18,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\jsoncpp-0.5.0\src\lib_json\json_batchallocator.h">
-      <Filter>json_include</Filter>
-    </ClInclude>
     <ClInclude Include="DwalWithJsonString.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\jsoncpp-0.5.0\src\lib_json\json_batchallocator.h">
+      <Filter>json_include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DealWithJsonString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="..\jsoncpp-0.5.0\src\lib_json\json_reader.cpp">
       <Filter>json_include</Filter>
     </ClCompile>
@@ -35,11 +41,19 @@
     <ClCompile Include="..\jsoncpp-0.5.0\src\lib_json\json_writer.cpp">
       <Filter>json_include</Filter>
     </ClCompile>
-    <ClCompile Include="DealWithJsonString.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_internalarray.inl">
+      <Filter>json_include</Filter>
+    </None>
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_internalmap.inl">
+      <Filter>json_include</Filter>
+    </None>
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_valueiterator.inl">
+      <Filter>json_include</Filter>
+    </None>
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\sconscript">
+      <Filter>json_include</Filter>
+    </None>
   </ItemGroup>
 </Project>

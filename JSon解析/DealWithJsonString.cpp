@@ -14,14 +14,16 @@ int ReadSourceJsonString(const string& strSourceFileName, string& strSourceJsonS
 	ifstream ifptrFile(strSourceFileName, ios::in);
 	if (!ifptrFile)
 	{
-		cout << __FUNCTION__ << "  open  " << strSourceFileName << " failed!" << endl;
+		cout << __FUNCTION__ << "  open  " << strSourceFileName << " failed!" << endl
+			<< "请在执行程序的目录下建一个  " << strSourceFileName << endl;
+
 		return -1;
 	}
 
 	//char szFileBuffer[1024] = { "\0" };		//读文件缓存；
 	try
 	{
-		while (!ifptrFile.eof)
+		while (!ifptrFile.eof())
 		{
 			getline(ifptrFile, strSourceJsonString);
 		}
@@ -131,19 +133,21 @@ int TranferredJsonString(const string& strSourceJsonString, string &strTransferr
 	return 0;
 
 }
+
 /*
 将处理好的json 串输出到执行文件同目录下的"MyJsonAnalyse.txt"
 输入 ;
+const std::string& strResFileNmae -- 转换结果待写入的文件
 strTransferredJsonString 转换好的json 串；
 输出：
 0  -- 写入文件成功
 -1 --  写入失败
 */
-int WriteBackToTXT(const string&strTransferredJsonString)
+int WriteBackToTXT(const std::string& strResFileNmae, const string&strTransferredJsonString)
 {
 	cout << "输出 json串 :" << endl << strTransferredJsonString << endl;
 
-	ofstream ofptrFile("MyJsonAnalyse.txt", ios::out || ios::trunc);
+	ofstream ofptrFile(strResFileNmae, ios::out || ios::trunc);
 	if (!ofptrFile)
 	{
 		cout << "open MyJsonAnalyse.txt failed !\n" << endl;

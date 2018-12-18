@@ -44,6 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\JSon解析\jsoncpp-0.5.0\include;.\JSon解析\jsoncpp-0.5.0\include;..\jsoncpp-0.5.0\include;.\jsoncpp-0.5.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -73,6 +74,12 @@
     <ClCompile Include="..\jsoncpp-0.5.0\src\lib_json\json_writer.cpp" />
     <ClCompile Include="DealWithJsonString.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_internalarray.inl" />
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_internalmap.inl" />
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\json_valueiterator.inl" />
+    <None Include="..\jsoncpp-0.5.0\src\lib_json\sconscript" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

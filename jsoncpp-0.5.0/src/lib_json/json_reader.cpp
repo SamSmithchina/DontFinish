@@ -61,7 +61,7 @@ containsNewLine( Reader::Location begin,
                  Reader::Location end )
 {
    for ( ;begin < end; ++begin )
-      if ( *begin == '/n'  ||  *begin == '/r' )
+      if ( *begin == '\n'  ||  *begin == '\r' )
          return true;
    return false;
 }
@@ -351,7 +351,7 @@ Reader::skipSpaces()
    while ( current_ != end_ )
    {
       Char c = *current_;
-      if ( c == ' '  ||  c == '/t'  ||  c == '/r'  ||  c == '/n' )
+      if ( c == ' '  ||  c == '\t'  ||  c == '\r'  ||  c == '\n' )
          ++current_;
       else
          break;
@@ -416,7 +416,7 @@ Reader::addComment( Location begin,
    else
    {
       if ( !commentsBefore_.empty() )
-         commentsBefore_ += "/n";
+         commentsBefore_ += "\n";
       commentsBefore_ += std::string( begin, end );
    }
 }
@@ -441,7 +441,7 @@ Reader::readCppStyleComment()
    while ( current_ != end_ )
    {
       Char c = getNextChar();
-      if (  c == '/r'  ||  c == '/n' )
+      if (  c == '\r'  ||  c == '\n' )
          break;
    }
    return true;
@@ -467,7 +467,7 @@ Reader::readString()
    while ( current_ != end_ )
    {
       c = getNextChar();
-      if ( c == '//' )
+      if ( c == '\\' )
          getNextChar();
       else if ( c == '"' )
          break;
@@ -665,7 +665,7 @@ Reader::decodeString( Token &token, std::string &decoded )
       Char c = *current++;
       if ( c == '"' )
          break;
-      else if ( c == '//' )
+      else if ( c == '\\' )
       {
          if ( current == end )
             return addError( "Empty escape sequence in string", token, current );
@@ -674,12 +674,12 @@ Reader::decodeString( Token &token, std::string &decoded )
          {
          case '"': decoded += '"'; break;
          case '/': decoded += '/'; break;
-         case '//': decoded += '//'; break;
-         case 'b': decoded += '/b'; break;
-         case 'f': decoded += '/f'; break;
-         case 'n': decoded += '/n'; break;
-         case 'r': decoded += '/r'; break;
-         case 't': decoded += '/t'; break;
+         case '\\': decoded += '\\'; break;
+         case 'b': decoded += '\b'; break;
+         case 'f': decoded += '\f'; break;
+         case 'n': decoded += '\n'; break;
+         case 'r': decoded += '\r'; break;
+         case 't': decoded += '\t'; break;
          case 'u':
             {
                unsigned int unicode;
@@ -715,7 +715,7 @@ Reader::decodeUnicodeCodePoint( Token &token,
       if (end - current < 6)
          return addError( "additional six characters expected to parse unicode surrogate pair.", token, current );
       unsigned int surrogatePair;
-      if (*(current++) == '//' && *(current++)== 'u')
+      if (*(current++) == '\\' && *(current++)== 'u')
       {
          if (decodeUnicodeEscapeSequence( token, current, end, surrogatePair ))
          {
@@ -725,7 +725,7 @@ Reader::decodeUnicodeCodePoint( Token &token,
             return false;
       } 
       else
-         return addError( "expecting another //u token to begin the second half of a unicode surrogate pair", token, current );
+         return addError( "expecting another \\u token to begin the second half of a unicode surrogate pair", token, current );
    }
    return true;
 }
@@ -824,14 +824,14 @@ Reader::getLocationLineAndColumn( Location location,
    while ( current < location  &&  current != end_ )
    {
       Char c = *current++;
-      if ( c == '/r' )
+      if ( c == '\r' )
       {
-         if ( *current == '/n' )
+         if ( *current == '\n' )
             ++current;
          lastLineStart = current;
          ++line;
       }
-      else if ( c == '/n' )
+      else if ( c == '\n' )
       {
          lastLineStart = current;
          ++line;
@@ -863,10 +863,10 @@ Reader::getFormatedErrorMessages() const
          ++itError )
    {
       const ErrorInfo &error = *itError;
-      formattedMessage += "* " + getLocationLineAndColumn( error.token_.start_ ) + "/n";
-      formattedMessage += "  " + error.message_ + "/n";
+      formattedMessage += "* " + getLocationLineAndColumn( error.token_.start_ ) + "\n";
+      formattedMessage += "  " + error.message_ + "\n";
       if ( error.extra_ )
-         formattedMessage += "See " + getLocationLineAndColumn( error.extra_ ) + " for detail./n";
+         formattedMessage += "See " + getLocationLineAndColumn( error.extra_ ) + " for detail.\n";
    }
    return formattedMessage;
 }

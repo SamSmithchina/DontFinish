@@ -153,7 +153,7 @@ Value::CommentInfo::setComment( const char *text )
    if ( comment_ )
       valueAllocator()->releaseStringValue( comment_ );
    JSON_ASSERT( text );
-   JSON_ASSERT_MESSAGE( text[0]=='/0' || text[0]=='/', "Comments must start with /");
+   JSON_ASSERT_MESSAGE( text[0]=='\0' || text[0]=='/', "Comments must start with /");
    // It seems that /**/ style comments are acceptable as well.
    comment_ = valueAllocator()->duplicateStringValue( text );
 }
@@ -261,7 +261,7 @@ Value::CZString::isStaticString() const
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 
-/*! /internal Default constructor initialization must be equivalent to:
+/*! \internal Default constructor initialization must be equivalent to:
  * memset( this, 0, sizeof(Value) )
  * This optimization is used in ValueInternalMap fast allocator.
  */
